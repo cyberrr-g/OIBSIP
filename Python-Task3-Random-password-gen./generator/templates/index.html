@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="{% static 'generator/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SecurePass <span class="accent">Generator</span></h1>
+            <p class="subtitle">Cryptographically strong passwords in one click</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="control-group">
+                    <label for="length">Password Length: <span id="lengthValue">16</span></label>
+                    <div class="slider-row">
+                        <input type="range" id="length" min="8" max="64" value="16">
+                        <input type="number" id="lengthInput" min="8" max="64" value="16" class="length-number">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Character Types</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="char_type" value="uppercase" checked>
+                            <span class="checkmark"></span>
+                            Uppercase (A-Z)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="char_type" value="lowercase" checked>
+                            <span class="checkmark"></span>
+                            Lowercase (a-z)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="char_type" value="numbers" checked>
+                            <span class="checkmark"></span>
+                            Numbers (0-9)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="char_type" value="symbols">
+                            <span class="checkmark"></span>
+                            Symbols (!@#$...)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="excludeAmbiguous">
+                        <span class="checkmark"></span>
+                        Exclude ambiguous characters (0, O, I, l, 1)
+                    </label>
+                </div>
+
+                <div class="button-row">
+                    <button id="generateBtn" class="btn btn-primary">Generate Password</button>
+                    <button id="copyBtn" class="btn btn-secondary" disabled>Copy to Clipboard</button>
+                </div>
+
+                <div class="password-display" id="passwordDisplay">
+                    <span id="passwordText" class="placeholder">Click "Generate Password" to start</span>
+                </div>
+
+                <div class="strength-section" id="strengthSection" style="display:none;">
+                    <div class="strength-bar-bg">
+                        <div class="strength-bar-fill" id="strengthBar"></div>
+                    </div>
+                    <span class="strength-label" id="strengthLabel"></span>
+                </div>
+
+                <div class="error-msg" id="errorMsg"></div>
+            </div>
+
+            <div class="card history-card">
+                <h2>Generation History <span class="history-hint">(last 5)</span></h2>
+                <ul id="historyList" class="history-list">
+                    <li class="empty-history">No passwords generated yet</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <blockquote class="quote">
+                "Security is not a product, but a process. It's not a single technology, 
+                but a layered approach — and it starts with a strong password."
+            </blockquote>
+            <p class="credit">Made with ❤️ by Amannn</p>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script src="{% static 'generator/script.js' %}"></script>
+</body>
+</html>
