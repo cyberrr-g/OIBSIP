@@ -151,3 +151,22 @@ class BMICalculatorWindow(QMainWindow):
         self.height_edit.clear()
         self.result_label.setText("")
         self.category_label.setText("")
+
+
+        
+    def load_history(self):
+        self.table.setRowCount(0)
+        filter_name = self.filter_edit.text().strip() or None
+        records = fetch_records(filter_name)
+        for row in records:
+            _, name, weight, height, bmi, category, date = row
+            pos = self.table.rowCount()
+            self.table.insertRow(pos)
+            self.table.setItem(pos, 0, QTableWidgetItem(name))
+            self.table.setItem(pos, 1, QTableWidgetItem(str(weight)))
+            self.table.setItem(pos, 2, QTableWidgetItem(str(height)))
+            self.table.setItem(pos, 3, QTableWidgetItem(f"{bmi:.2f}"))
+            cat_item = QTableWidgetItem(category)
+            cat_item.setForeground(QColor(CATEGORY_COLORS.get(category, "#000000")))
+            self.table.setItem(pos, 4, cat_item)
+            self.table.setItem(pos, 5, QTableWidgetItem(date))
