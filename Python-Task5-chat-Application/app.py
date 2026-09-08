@@ -1,5 +1,10 @@
 import os
+import sys
 import functools
+
+# Make sure this app's own directory is importable, even after the Werkzeug
+# auto-reloader restarts the process from a different working directory.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from flask import Flask, request, render_template, session, redirect, url_for, flash
 from flask_socketio import SocketIO, emit, join_room, leave_room, send
