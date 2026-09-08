@@ -11,14 +11,18 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
 
-# Uses the built-in "threading" async mode (no eventlet/gevent needed).
-# This keeps the app dependency-free and runs reliably on localhost.
-socketio = SocketIO(app, async_mode="threading")
+# Eventlet provides a WSGI server with real WebSocket support ("threading"
+# mode runs on Werkzeug, which cannot upgrade connections to WebSocket).
+# Fall back to "threading" if eventlet is unavailable.
+try:
+    import eventlet  # noqa: F401
+    socketio = SocketIO(app, async_mode="eventlet")
+except ImportError:
+    socketio = SocketIO(app, async_mode="threading")
 
 # Track active users per room for presence notifications.
 # room_name -> set of usernames
 ROOM_USERS = {}
-PRESENCE_LOCK = database._db_lock
 
 
 # ---------------------------------------------------------------------------
