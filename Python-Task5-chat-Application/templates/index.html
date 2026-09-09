@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenChat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="index-layout">
+        <aside class="sidebar">
+            <div class="sidebar-head">
+                <h1>💬 OpenChat</h1>
+                <div class="user-chip">
+                    <span>👤 {{ username }}</span>
+                    <a class="logout" href="{{ url_for('logout') }}">Log out</a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <section class="rooms-panel">
+                <h2>Rooms</h2>
+                <form class="join-form" method="get" onsubmit="enterRoom(event)">
+                    <input id="room-input" type="text" placeholder="Room name" required>
+                    <button type="submit">Join / Create</button>
+                </form>
+                <ul class="room-list" id="room-list">
+                    {% for room in rooms %}
+                        <li>
+                            <a href="{{ url_for('room_page', name=room.name) }}">{{ room.name }}</a>
+                            <span class="count">{{ room.message_count }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if rooms|length == 0 %}
+                    <p class="empty">No rooms yet. Create one above! 🚀</p>
+                {% endif %}
+            </section>
+        </aside>
+
+        <main class="index-main">
+            <h2>Welcome to OpenChat!</h2>
+            <p>Join or create a room from the sidebar to start chatting in real time.</p>
+            <ul class="feature-list">
+                <li>✅ Secure user registration &amp; login</li>
+                <li>✅ Multiple named chat rooms</li>
+                <li>✅ Persistent message history</li>
+                <li>✅ Emoji shortcodes (try <code>:smile:</code>)</li>
+                <li>✅ Live presence &amp; notifications</li>
+            </ul>
+        </main>
+    </div>
+
+    <script>
+        function enterRoom(event) {
+            event.preventDefault();
+            const name = document.getElementById('room-input').value.trim();
+            if (name) window.location.href = '/room/' + encodeURIComponent(name);
+        }
+    </script>
+</body>
+</html>

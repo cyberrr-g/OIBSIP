@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room }} · OpenChat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-room="{{ room }}" data-username="{{ username }}">
+    <div class="chat-layout">
+        <aside class="sidebar">
+            <div class="sidebar-head">
+                <h1>💬 OpenChat</h1>
+                <div class="user-chip">
+                    <span>👤 {{ username }}</span>
+                    <a class="logout" href="{{ url_for('logout') }}">Log out</a>
+                </div>
+            </div>
+
+            <section class="rooms-panel">
+                <h2>Rooms <a class="home-link" href="{{ url_for('index') }}">all</a></h2>
+                <form class="join-form" method="get" onsubmit="enterRoom(event)">
+                    <input id="room-input" type="text" placeholder="Room name" required>
+                    <button type="submit">Join</button>
+                </form>
+                <ul class="room-list">
+                    {% for r in rooms %}
+                        <li class="{{ 'active' if r.name == room }}">
+                            <a href="{{ url_for('room_page', name=r.name) }}">{{ r.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <section class="presence-panel">
+                <h2>In this room</h2>
+                <ul class="presence-list" id="presence-list"></ul>
+            </section>
+        </aside>
+
+        <main class="chat-main">
+            <header class="chat-header">
+                <h2>#{{ room }}</h2>
+                <span class="conn-status" id="conn-status">connecting…</span>
+            </header>
+
+            <div class="messages" id="messages">
+                {% for m in history %}
+                    <div class="msg {{ 'mine' if m.username == username }}"
+                         data-username="{{ m.username }}">
+                        <div class="msg-meta">
+                            <span class="msg-name">{{ m.username }}</span>
+                            <span class="msg-time">[{{ m.created_at[11:16] if m.created_at else '' }}]</span>
+                        </div>
+                        <div class="msg-text">{{ m.emoji_rendered or m.content }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <footer class="composer">
+                <div class="emoji-row" id="emoji-row"></div>
+                <form class="composer-form" onsubmit="sendMessage(event)">
+                    <input id="message-input" type="text" placeholder="Type a message… :smile:" autocomplete="off">
+                    <button type="submit">Send</button>
+                </form>
+                <div class="composer-hint">Tip: type <code>:smile:</code> to send an emoji ✨</div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+</body>
+</html>
